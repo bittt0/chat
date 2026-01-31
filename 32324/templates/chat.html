@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Global Chat</title>
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+<style>
+body { background:#0b0615; color:#e0d9ff; font-family:Arial; margin:0; }
+header { background:#140b25; padding:15px; text-align:center; }
+#chat { max-width:800px; margin:auto; padding:20px; }
+ul { list-style:none; height:400px; overflow-y:auto; background:#140b25; border-radius:10px; padding:10px; }
+li { margin-bottom:8px; }
+input { width:75%; padding:10px; background:#1e123a; color:white; border:none; border-radius:5px; }
+button { padding:10px; background:#6a00ff; color:white; border:none; border-radius:5px; cursor:pointer; }
+button:hover { background:#8c4dff; }
+.admin { margin-top:15px; }
+.admin button { background:#ff0055; }
+</style>
+</head>
+<body>
+
+<header>
+Logged in as <b>{{ user }}</b> ({{ role }}) |
+<a href="/logout" style="color:#b084ff;">Logout</a>
+</header>
+
+<div id="chat">
+<ul id="messages">
+{% for msg in messages %}
+<li>{{ msg[0] }}: {{ msg[1] }}</li>
+{% endfor %}
+</ul>
+
+<br>
+<input id="msg" placeholder="Type message">
+<button onclick="send()">Send</button>
+
+{% if role == "owner" %}
+<div class="admin">
+<h3>Owner Controls</h3>
+<form action="/ban" method="POST">
+<input name="username" placeholder="Ban username">
+<button>Ban</button>
+</form>
+<form action="/rename" method="POST">
+<input name="old" placeholder="Old username">
+<input name="new" placeholder="New username">
+<button>Rename</button>
+</form>
+<form action="/clear_chat" method="POST">
+<button>Clear Chat</button>
+</form>
+</div>
+{% endif %}
+</div>
+
+<script>
+const socket = io();
+
+socket.on("message", data => {
+    const li = document.createElement("li");
+    li.innerHTML = `<span style="color:${data.color}">${data.user}</span>: ${data.text}`;
+    messages.appendChild(li);
+    messages.scrollTop = messages.scrollHeight;
+});
+
+socket.on("system", msg => {
+    const li = document.createElement("li");
+    li.innerHTML = `<i>${msg}</i>`;
+    messages.appendChild(li);
+    messages.scrollTop = messages.scrollHeight;
+});
+
+socket.on("clear_chat", () => {
+    const messagesUl = document.getElementById("messages");
+    messagesUl.innerHTML = "";
+});
+
+function send() {
+    const input = document.getElementById("msg");
+    if (input.value.trim()) {
+        socket.send(input.value);
+        input.value = "";
+    }
+}
+</script>
+</body>
+</html>

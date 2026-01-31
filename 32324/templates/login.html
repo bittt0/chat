@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Login</title>
+<style>
+body { background:#0b0615; color:#e0d9ff; font-family:Arial; display:flex; justify-content:center; align-items:center; height:100vh; }
+.box { background:#140b25; padding:30px; border-radius:10px; width:300px; box-shadow:0 0 20px #6a00ff66; }
+input, button { width:100%; padding:10px; margin-top:10px; border:none; border-radius:5px; }
+input { background:#1e123a; color:white; }
+button { background:#6a00ff; color:white; cursor:pointer; }
+button:hover { background:#8c4dff; }
+h2 { text-align:center; color:#b084ff; }
+</style>
+</head>
+<body>
+<div class="box">
+<h2>Login</h2>
+<form method="POST">
+<input name="username" placeholder="Username" required>
+<input name="password" type="password" placeholder="Password" required>
+<button>Login</button>
+</form>
+<h2>Sign Up</h2>
+<form action="/signup" method="POST">
+<input name="username" placeholder="Username" required>
+<input name="password" type="password" placeholder="Password" required>
+<button>Sign Up</button>
+</form>
+</div>
+</body>
+</html>
